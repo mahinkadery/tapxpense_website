@@ -5,10 +5,21 @@ window.addEventListener('load', () => {
 
 // === CURSOR GLOW ===
 const glow = document.getElementById('cursorGlow');
-document.addEventListener('mousemove', e => {
-  glow.style.left = e.clientX + 'px';
-  glow.style.top = e.clientY + 'px';
-});
+if (glow && window.matchMedia('(pointer: fine)').matches) {
+  let mx = 0;
+  let my = 0;
+  let glowRaf = null;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX;
+    my = e.clientY;
+    if (glowRaf) return;
+    glowRaf = requestAnimationFrame(() => {
+      glow.style.transform = `translate3d(${mx}px, ${my}px, 0) translate(-50%, -50%)`;
+      glowRaf = null;
+    });
+  }, { passive: true });
+}
 
 // === HERO MASTHEAD CHAR SPLIT ===
 const masthead = document.getElementById('masthead');
@@ -179,6 +190,16 @@ if (taglineBg) {
     mobileNav.setAttribute('aria-hidden', mobileQuery.matches ? 'false' : 'true');
     mobileQuery.addEventListener('change', e => {
       mobileNav.setAttribute('aria-hidden', e.matches ? 'false' : 'true');
+      if (e.matches) {
+        phone.style.transform = '';
+        if (shadow) {
+          shadow.style.transform = '';
+          shadow.style.opacity = '';
+        }
+        if (bgText) bgText.style.transform = '';
+      } else {
+        update();
+      }
     });
   }
 
