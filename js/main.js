@@ -140,7 +140,7 @@ if (taglineBg) {
   if (!pin || !phone) return;
 
   const numSteps = 5;
-  const bgWords = ['HOME', 'REPORTS', 'INSIGHTS', 'WIDGET', 'SETTINGS'];
+  const bgWords = ['HOME', 'REPORTS', 'INSIGHTS', 'BACK TAP', 'SYNC'];
   const mobileQuery = window.matchMedia('(max-width: 768px)');
 
   let currentStep = 0;

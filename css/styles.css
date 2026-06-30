@@ -74,7 +74,8 @@ body {
   animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.8s forwards;
 }
 @keyframes slideDown { to { transform: translateY(0); } }
-.topbar-logo { font-family: var(--serif); font-size: 14px; font-weight: 700; letter-spacing: 0.02em; text-transform: none; }
+.topbar-logo { font-family: var(--serif); font-size: 14px; font-weight: 700; letter-spacing: 0.02em; text-transform: none; display: inline-flex; align-items: center; gap: 10px; }
+.topbar-icon { border-radius: 7px; display: block; flex-shrink: 0; }
 a.topbar-logo { color: inherit; text-decoration: none; }
 .topbar-right { display: flex; gap: 24px; align-items: center; }
 .topbar-right a {
@@ -353,7 +354,7 @@ a.topbar-logo { color: inherit; text-decoration: none; }
 }
 .demo-inner {
   max-width: 1100px; margin: 0 auto;
-  display: grid; grid-template-columns: 1fr 1fr;
+  display: grid; grid-template-columns: 1fr minmax(240px, 300px);
   gap: 60px; align-items: center;
 }
 .demo-copy h2 {
@@ -363,15 +364,20 @@ a.topbar-logo { color: inherit; text-decoration: none; }
 }
 .demo-copy p { font-size: 15px; line-height: 1.7; color: var(--ink-light); }
 .demo-video-wrap {
-  border-radius: 24px; overflow: hidden;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  border-radius: 28px; overflow: hidden;
   box-shadow: 0 40px 80px rgba(0,0,0,0.15);
   border: 1px solid rgba(26,26,24,0.08);
   background: #000;
+  line-height: 0;
 }
 .demo-video {
-  display: block; width: 100%; height: auto;
-  aspect-ratio: 9/16; max-height: 520px;
-  object-fit: cover; object-position: top;
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
 }
 
 /* ===== ARCHITECTURE ===== */
@@ -450,8 +456,9 @@ a.topbar-logo { color: inherit; text-decoration: none; }
 .showcase-phone-screens img {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  object-fit: cover; object-position: top;
+  object-fit: contain; object-position: top center;
   display: block;
+  background: #000;
   opacity: 0;
   transform: scale(1.05);
   transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
@@ -672,9 +679,13 @@ a.topbar-logo { color: inherit; text-decoration: none; }
   box-shadow: 0 8px 30px rgba(0,0,0,0.1);
   transform-style: preserve-3d;
   transition: transform 0.5s;
+  max-width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #000;
 }
 .how-step:hover .how-step-phone { transform: translateZ(20px); }
-.how-step-phone img { width: 100%; display: block; }
+.how-step-phone img { width: 100%; height: auto; display: block; object-fit: contain; }
 
 /* ===== CTA ===== */
 .cta-section {
@@ -776,7 +787,7 @@ a.topbar-logo { color: inherit; text-decoration: none; }
   .overview-section, .demo-section, .architecture-section { padding: 60px 20px; }
   .quick-facts { grid-template-columns: 1fr; }
   .demo-inner { grid-template-columns: 1fr; gap: 32px; }
-  .demo-video { max-height: 420px; margin: 0 auto; }
+  .demo-video-wrap { max-width: 260px; }
   .features-grid { grid-template-columns: 1fr; }
   .showcase-pin { height: auto; }
   .showcase-sticky {
@@ -808,7 +819,7 @@ a.topbar-logo { color: inherit; text-decoration: none; }
 
 /* ===== LEGAL PAGES ===== */
 .topbar-simple { transform: translateY(0); animation: none; }
-.topbar-logo a { color: inherit; text-decoration: none; }
+.topbar-logo a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
 .legal-page {
   padding: 120px 40px 80px;
   max-width: 780px;

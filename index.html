@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="TapXpense — log an expense in seconds with a Back Tap. On-device AI categorisation, offline-first, private by default.">
 <title>TapXpense — iOS Expense Tracker</title>
+<link rel="icon" href="assets/icon.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
@@ -28,7 +29,10 @@
 <div class="cursor-glow" id="cursorGlow"></div>
 
 <nav class="topbar">
-  <a href="index.html" class="topbar-logo">TapXpense</a>
+  <a href="index.html" class="topbar-logo">
+    <img src="assets/icon.png" alt="" class="topbar-icon" width="28" height="28">
+    TapXpense
+  </a>
   <div style="font-family: var(--serif-display); font-style: italic; font-size: 13px; letter-spacing: 0.04em;">The Expense Tracker</div>
   <div class="topbar-right">
     <a href="#overview" class="magnetic">Overview</a>
@@ -137,7 +141,7 @@
       <p>A nine-second walkthrough: log a coffee with a Back Tap straight from the lock screen, glance at the home-screen widget, then open the in-app dashboard.</p>
     </div>
     <div class="demo-video-wrap" data-scroll="right">
-      <video class="demo-video" autoplay muted loop playsinline poster="assets/home.png">
+      <video class="demo-video" autoplay muted loop playsinline poster="assets/screen-dashboard.png">
         <source src="assets/demo.webm" type="video/webm">
         <source src="assets/demo.mp4" type="video/mp4">
       </video>
@@ -153,7 +157,7 @@
       <button type="button" class="showcase-dot active" data-step="0" aria-label="Home dashboard"></button>
       <button type="button" class="showcase-dot" data-step="1" aria-label="Reports overview"></button>
       <button type="button" class="showcase-dot" data-step="2" aria-label="Smart insights"></button>
-      <button type="button" class="showcase-dot" data-step="3" aria-label="Home-screen widget"></button>
+      <button type="button" class="showcase-dot" data-step="3" aria-label="Back Tap quick-log"></button>
       <button type="button" class="showcase-dot" data-step="4" aria-label="Settings and sync"></button>
     </div>
 
@@ -174,9 +178,9 @@
         <p>Spend forecasts, your biggest expense, subscription totals — plus a private, on-device AI you can ask about your money.</p>
       </div>
       <div class="showcase-caption cap-right" data-cap="3">
-        <div class="cap-num">04 — Home-Screen Widget</div>
-        <h3>Add an expense<br>in one tap.</h3>
-        <p>See this month's spending right on your home screen — and log a new expense without ever opening the app.</p>
+        <div class="cap-num">04 — Back Tap Quick-Log</div>
+        <h3>Log from anywhere,<br>even the lock screen.</h3>
+        <p>Double-tap the back of your iPhone to open a quick-entry sheet — speak or type the amount without launching the app.</p>
       </div>
       <div class="showcase-caption cap-left" data-cap="4">
         <div class="cap-num">05 — Settings &amp; Sync</div>
@@ -190,11 +194,11 @@
         <div class="showcase-phone-frame">
           <div class="showcase-phone-screens">
             <div class="showcase-phone-notch"></div>
-            <img src="assets/home.png" alt="Home dashboard" class="active" data-screen="0">
+            <img src="assets/screen-dashboard.png" alt="Home dashboard" class="active" data-screen="0">
             <img src="assets/reports.png" alt="Reports overview" data-screen="1">
-            <img src="assets/insights.png" alt="Smart insights" data-screen="2">
-            <img src="assets/widget.png" alt="Home-screen widget" data-screen="3">
-            <img src="assets/settings.png" alt="Settings and sync" data-screen="4">
+            <img src="assets/screen-insights.png" alt="Smart insights" data-screen="2">
+            <img src="assets/screen-quick-log.png" alt="Back Tap quick-log" data-screen="3">
+            <img src="assets/screen-signin.png" alt="Settings and sync" data-screen="4">
             <div class="showcase-phone-glare"></div>
           </div>
         </div>
@@ -263,19 +267,19 @@
       <div class="how-step-num">01</div>
       <h3>Back Tap or Widget</h3>
       <p>Double-tap the back of your iPhone or use a home-screen widget. Speak or type the amount — no app launch needed.</p>
-      <div class="how-step-phone"><img src="assets/widget.png" alt="Widget"></div>
+      <div class="how-step-phone"><img src="assets/screen-quick-log.png" alt="Back Tap quick-log"></div>
     </div>
     <div class="how-step" data-scroll="up" data-delay="150">
       <div class="how-step-num">02</div>
       <h3>AI Categorises</h3>
       <p>On-device AI parses and categorises your expense automatically. Your dashboard updates in real time, even offline.</p>
-      <div class="how-step-phone"><img src="assets/home.png" alt="Dashboard"></div>
+      <div class="how-step-phone"><img src="assets/screen-dashboard.png" alt="Dashboard"></div>
     </div>
     <div class="how-step" data-scroll="up" data-delay="300">
       <div class="how-step-num">03</div>
       <h3>Budgets &amp; Reports</h3>
       <p>Review weekly, monthly, or yearly summaries. Set budgets, track subscriptions, and ask your money anything.</p>
-      <div class="how-step-phone"><img src="assets/reports.png" alt="Reports overview"></div>
+      <div class="how-step-phone"><img src="assets/screen-insights.png" alt="Reports and insights"></div>
     </div>
   </div>
 </section>
