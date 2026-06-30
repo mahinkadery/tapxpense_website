@@ -133,38 +133,75 @@ if (taglineBg) {
   const screens = document.querySelectorAll('.showcase-phone-screens img');
   const captions = document.querySelectorAll('.showcase-caption');
   const dots = document.querySelectorAll('.showcase-dot');
+  const mobileNav = document.querySelector('.showcase-mobile-nav');
+  const mobileDotsContainer = document.getElementById('showcaseMobileDots');
+  const prevBtn = document.getElementById('showcasePrev');
+  const nextBtn = document.getElementById('showcaseNext');
   if (!pin || !phone) return;
 
-  const numSteps = 4;
-  const bgWords = ['HOME', 'WIDGET', 'INSIGHTS', 'REPORTS'];
+  const numSteps = 5;
+  const bgWords = ['HOME', 'REPORTS', 'INSIGHTS', 'WIDGET', 'SETTINGS'];
+  const mobileQuery = window.matchMedia('(max-width: 768px)');
 
-  // Easing
+  let currentStep = 0;
+  let raf = null;
+
+  function setShowcaseStep(step) {
+    currentStep = Math.max(0, Math.min(numSteps - 1, step));
+    screens.forEach((img, i) => img.classList.toggle('active', i === currentStep));
+    captions.forEach((cap, i) => cap.classList.toggle('active', i === currentStep));
+    dots.forEach((d, i) => d.classList.toggle('active', i === currentStep));
+    mobileDotsContainer?.querySelectorAll('button').forEach((d, i) => {
+      d.classList.toggle('active', i === currentStep);
+    });
+    if (bgWords[currentStep] && bgText) bgText.textContent = bgWords[currentStep];
+  }
+
+  // Build mobile dots
+  if (mobileDotsContainer) {
+    for (let i = 0; i < numSteps; i++) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', `Screen ${i + 1}`);
+      if (i === 0) btn.classList.add('active');
+      btn.addEventListener('click', () => setShowcaseStep(i));
+      mobileDotsContainer.appendChild(btn);
+    }
+  }
+
+  dots.forEach(d => {
+    d.addEventListener('click', () => setShowcaseStep(parseInt(d.dataset.step, 10)));
+  });
+  prevBtn?.addEventListener('click', () => setShowcaseStep(currentStep - 1));
+  nextBtn?.addEventListener('click', () => setShowcaseStep(currentStep + 1));
+
+  if (mobileNav) {
+    mobileNav.setAttribute('aria-hidden', mobileQuery.matches ? 'false' : 'true');
+    mobileQuery.addEventListener('change', e => {
+      mobileNav.setAttribute('aria-hidden', e.matches ? 'false' : 'true');
+    });
+  }
+
   const easeInOut = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
   const lerp = (a, b, t) => a + (b - a) * t;
 
-  let currentStep = -1;
-  let raf = null;
-
   function update() {
+    if (mobileQuery.matches) return;
+
     const rect = pin.getBoundingClientRect();
     const winH = window.innerHeight;
     const total = pin.offsetHeight - winH;
-    // 0 → 1 across the entire pinned scroll
     const progress = Math.max(0, Math.min(1, -rect.top / total));
 
-    // Determine current narrative step (0..3)
     const stepFloat = progress * (numSteps - 1);
     const step = Math.round(stepFloat);
-    const localT = stepFloat - Math.floor(stepFloat);
-    const localEased = easeInOut(localT);
 
-    // === 3D phone transforms — interpolate per beat ===
-    // Define keyframes for each step: rotateY, rotateX, rotateZ, translateZ, translateY, translateX, scale
     const keys = [
-      { ry: -18, rx: 6,  rz: -2, tz: 0,    ty: 0,   tx: -60, s: 1.0 },  // intro: tilted left
-      { ry: 18,  rx: -4, rz: 3,  tz: 80,   ty: -20, tx: 60,  s: 1.05 }, // shortcut: tilted right, popped forward
-      { ry: -10, rx: 8,  rz: -4, tz: -40,  ty: 0,   tx: -40, s: 0.95 }, // reports: tilted back-left
-      { ry: 0,   rx: 0,  rz: 0,  tz: 60,   ty: 0,   tx: 0,   s: 1.1 }   // hero pose: front and large
+      { ry: -18, rx: 6,  rz: -2, tz: 0,    ty: 0,   tx: -60, s: 1.0 },
+      { ry: 12,  rx: -3, rz: 2,  tz: 60,   ty: -10, tx: 50,  s: 1.04 },
+      { ry: -10, rx: 8,  rz: -4, tz: -40,  ty: 0,   tx: -40, s: 0.95 },
+      { ry: 18,  rx: -4, rz: 3,  tz: 80,   ty: -20, tx: 60,  s: 1.05 },
+      { ry: 0,   rx: 0,  rz: 0,  tz: 60,   ty: 0,   tx: 0,   s: 1.1 }
     ];
 
     const i0 = Math.min(Math.floor(stepFloat), numSteps - 2);
@@ -188,32 +225,20 @@ if (taglineBg) {
       `rotateY(${ry}deg) rotateX(${rx}deg) rotateZ(${rz}deg) ` +
       `translateZ(${tz}px)`;
 
-    // Shadow follows but flatter
-    shadow.style.transform = `scaleX(${1 - Math.abs(ry) * 0.01}) scaleY(${1 - Math.abs(tz) * 0.002}) translateY(${tz * 0.1}px)`;
-    shadow.style.opacity = 0.3 + Math.abs(tz) * 0.002;
-
-    // Background text parallax — drifts horizontally with scroll
-    bgText.style.transform = `translate(${-50 - progress * 30}%, -50%) scale(${1 + progress * 0.1})`;
-
-    // Discrete step changes
-    if (step !== currentStep) {
-      currentStep = step;
-      const safeStep = Math.max(0, Math.min(numSteps - 1, step));
-
-      screens.forEach((img, i) => {
-        img.classList.toggle('active', i === safeStep);
-      });
-      captions.forEach((cap, i) => {
-        cap.classList.toggle('active', i === safeStep);
-      });
-      dots.forEach((d, i) => {
-        d.classList.toggle('active', i === safeStep);
-      });
-      if (bgWords[safeStep]) bgText.textContent = bgWords[safeStep];
+    if (shadow) {
+      shadow.style.transform = `scaleX(${1 - Math.abs(ry) * 0.01}) scaleY(${1 - Math.abs(tz) * 0.002}) translateY(${tz * 0.1}px)`;
+      shadow.style.opacity = 0.3 + Math.abs(tz) * 0.002;
     }
+
+    if (bgText) {
+      bgText.style.transform = `translate(${-50 - progress * 30}%, -50%) scale(${1 + progress * 0.1})`;
+    }
+
+    if (step !== currentStep) setShowcaseStep(step);
   }
 
   function onScroll() {
+    if (mobileQuery.matches) return;
     if (raf) return;
     raf = requestAnimationFrame(() => {
       raf = null;
@@ -223,5 +248,6 @@ if (taglineBg) {
 
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });
+  setShowcaseStep(0);
   update();
 })();
