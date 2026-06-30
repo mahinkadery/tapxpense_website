@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="TapXpense — log an expense in seconds with a Back Tap. On-device AI categorisation, offline-first, private by default.">
+<title>TapXpense — iOS Expense Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<svg style="position:absolute;width:0;height:0">
+  <defs>
+    <filter id="torn-filter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<div class="loader" id="loader">
+  <div class="loader-text"><span style="animation-delay:0.2s">T</span><span style="animation-delay:0.25s">A</span><span style="animation-delay:0.3s">P</span><span style="animation-delay:0.35s">X</span><span style="animation-delay:0.4s">P</span><span style="animation-delay:0.45s">E</span><span style="animation-delay:0.5s">N</span><span style="animation-delay:0.55s">S</span><span style="animation-delay:0.6s">E</span></div>
+  <div class="loader-bar"><div class="loader-bar-inner"></div></div>
+</div>
+
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<nav class="topbar">
+  <a href="index.html" class="topbar-logo">TapXpense</a>
+  <div style="font-family: var(--serif-display); font-style: italic; font-size: 13px; letter-spacing: 0.04em;">The Expense Tracker</div>
+  <div class="topbar-right">
+    <a href="#features" class="magnetic">Features</a>
+    <a href="#how" class="magnetic">How It Works</a>
+    <a href="#download" class="magnetic">Download</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-date-row">
+    <span>iOS 17+</span>
+    <span>In Development</span>
+    <span>Private by Default</span>
+  </div>
+  <h1 class="hero-masthead" id="masthead">
+    TAP<span class="line-through">XPENSE</span>
+  </h1>
+  <div class="hero-subtitle-row">
+    <div class="hero-subtitle-left">
+      <div class="word"><span style="animation-delay:2.8s">Log</span></div>
+      <div class="word"><span style="animation-delay:2.9s">In</span></div><br>
+      <div class="word"><span style="animation-delay:3.0s">Seconds,</span></div><br>
+      <div class="word"><span style="animation-delay:3.1s">Not Minutes.</span></div>
+    </div>
+    <div class="hero-subtitle-center">
+      Log an expense in seconds with a Back Tap — let on-device AI do the rest. Offline-first, fully usable with no account and no connection.
+    </div>
+    <div class="hero-subtitle-right">
+      Back Tap Quick-Log<br>On-Device AI<br>Offline-First<br>Private Cloud Sync
+    </div>
+  </div>
+</section>
+
+<div class="torn-edge"></div>
+
+<section class="dark-section" id="features">
+  <div class="features-header">
+    <h2 data-scroll="up">YOUR<br>EXPENSES</h2>
+    <p data-scroll="up" data-delay="100">Everything you need to track spending — nothing you don't.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card" data-scroll="flip" data-delay="0" data-tilt>
+      <div class="feature-num">Feature 01</div>
+      <div class="feature-title">Back Tap<br>Quick-Log <span class="feature-tag">New</span></div>
+      <div class="feature-desc">Double- or triple-tap the back of your iPhone to log an expense instantly via an App Intent — no need to even open the app.</div>
+    </div>
+    <div class="feature-card" data-scroll="flip-left" data-delay="100" data-tilt>
+      <div class="feature-num">Feature 02</div>
+      <div class="feature-title">On-Device AI<br>Categorisation</div>
+      <div class="feature-desc">Expenses are parsed and categorised automatically, with worldwide merchant awareness and a keyword fallback that still works offline.</div>
+    </div>
+    <div class="feature-card" data-scroll="flip" data-delay="200" data-tilt>
+      <div class="feature-num">Feature 03</div>
+      <div class="feature-title">Budgets &amp;<br>Insights</div>
+      <div class="feature-desc">Monthly spending limits, month-over-month comparisons and anomaly nudges that tell you when you're spending more than usual.</div>
+    </div>
+    <div class="feature-card" data-scroll="flip-left" data-delay="300" data-tilt>
+      <div class="feature-num">Feature 04</div>
+      <div class="feature-title">Widgets &amp;<br>Apple Wallet</div>
+      <div class="feature-desc">Home-screen and Control Center widgets for one-tap logging, plus automatic logging of Apple Wallet transactions.</div>
+    </div>
+    <div class="feature-card" data-scroll="flip" data-delay="400" data-tilt>
+      <div class="feature-num">Feature 05</div>
+      <div class="feature-title">Subscriptions,<br>Income &amp; Reminders</div>
+      <div class="feature-desc">Track recurring subscriptions and salary, with reminders so renewals and pay-days are never a surprise.</div>
+    </div>
+    <div class="feature-card" data-scroll="flip-left" data-delay="500" data-tilt>
+      <div class="feature-num">Feature 06</div>
+      <div class="feature-title">AI Report &amp;<br>"Ask Your Money"</div>
+      <div class="feature-desc">A generated financial report plus a private, on-device chat that answers questions about your own spending — backed by CSV export and dark mode.</div>
+    </div>
+  </div>
+</section>
+
+<div class="torn-edge-top"></div>
+
+<section class="showcase-pin" id="showcase">
+  <div class="showcase-sticky">
+    <div class="showcase-bg-text" id="showcaseBgText">EXPENSES</div>
+    <div class="showcase-intro-label">SCROLL TO EXPLORE</div>
+    <div class="showcase-progress" id="showcaseProgress">
+      <div class="showcase-dot active" data-step="0"></div>
+      <div class="showcase-dot" data-step="1"></div>
+      <div class="showcase-dot" data-step="2"></div>
+      <div class="showcase-dot" data-step="3"></div>
+    </div>
+
+    <div class="showcase-captions">
+      <div class="showcase-caption cap-left active" data-cap="0">
+        <div class="cap-num">01 — The Home Dashboard</div>
+        <h3>Your week at<br>a glance.</h3>
+        <p>SwiftData is the source of truth — see spending charted by day with your latest expenses below. Clean, minimal, and instantly readable.</p>
+      </div>
+      <div class="showcase-caption cap-right" data-cap="1">
+        <div class="cap-num">02 — Home-Screen Widget</div>
+        <h3>Add an expense<br>in one tap.</h3>
+        <p>See this month's spending right on your home screen — and log a new expense without ever opening the app.</p>
+      </div>
+      <div class="showcase-caption cap-left" data-cap="2">
+        <div class="cap-num">03 — Smart Insights</div>
+        <h3>It does the<br>thinking for you.</h3>
+        <p>Spend forecasts, your biggest expense, subscription totals — plus a private, on-device AI you can ask about your money.</p>
+      </div>
+      <div class="showcase-caption cap-right" data-cap="3">
+        <div class="cap-num">04 — Reports</div>
+        <h3>Week, month<br>&amp; year.</h3>
+        <p>Clear totals and AI-written summaries that make sense of your spending — with CSV export when you need it.</p>
+      </div>
+    </div>
+
+    <div class="showcase-stage">
+      <div class="showcase-phone" id="showcasePhone">
+        <div class="showcase-phone-frame">
+          <div class="showcase-phone-screens">
+            <div class="showcase-phone-notch"></div>
+            <img src="assets/home.png" alt="Home dashboard" class="active" data-screen="0">
+            <img src="assets/widget.png" alt="Home-screen widget" data-screen="1">
+            <img src="assets/insights.png" alt="Smart insights" data-screen="2">
+            <img src="assets/reports-totals.png" alt="Reports totals" data-screen="3">
+            <div class="showcase-phone-glare"></div>
+          </div>
+        </div>
+        <div class="showcase-phone-shadow" id="showcaseShadow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="dashed-divider">
+
+<div class="stats-section">
+  <div class="stat-item" data-scroll="up" data-delay="0">
+    <div class="stat-label">Seconds to Log</div>
+    <div class="stat-value"><span class="count-up" data-target="3">0</span></div>
+    <div class="stat-unit">with Back Tap</div>
+  </div>
+  <div class="stat-item" data-scroll="up" data-delay="100">
+    <div class="stat-label">Processing</div>
+    <div class="stat-value">AI</div>
+    <div class="stat-unit">on-device first</div>
+  </div>
+  <div class="stat-item" data-scroll="up" data-delay="200">
+    <div class="stat-label">Minimum OS</div>
+    <div class="stat-value"><span class="count-up" data-target="17">0</span></div>
+    <div class="stat-unit">iOS &amp; iPhone</div>
+  </div>
+  <div class="stat-item" data-scroll="up" data-delay="300">
+    <div class="stat-label">Sign-Up</div>
+    <div class="stat-value">0</div>
+    <div class="stat-unit">required as guest</div>
+  </div>
+</div>
+
+<section class="tagline-section">
+  <div class="tagline-bg-text">TAPXPENSE</div>
+  <h2 data-scroll="scale">THE<br><span class="tagline-word-accent">EFFORTLESS</span><br>EXPENSE<br>TRACKER</h2>
+</section>
+
+<section class="how-section" id="how">
+  <div class="how-header">
+    <h2 data-scroll="left">How It<br>Works</h2>
+    <p data-scroll="right">Three steps between "I just spent money" and "it's recorded." No sign-up walls, no complexity.</p>
+  </div>
+  <div class="how-steps">
+    <div class="how-step" data-scroll="up" data-delay="0">
+      <div class="how-step-num">01</div>
+      <h3>Back Tap or Widget</h3>
+      <p>Double-tap the back of your iPhone or use a home-screen widget. Speak or type the amount — no app launch needed.</p>
+      <div class="how-step-phone"><img src="assets/widget.png" alt="Widget"></div>
+    </div>
+    <div class="how-step" data-scroll="up" data-delay="150">
+      <div class="how-step-num">02</div>
+      <h3>AI Categorises</h3>
+      <p>On-device AI parses and categorises your expense automatically. Your dashboard updates in real time, even offline.</p>
+      <div class="how-step-phone"><img src="assets/home.png" alt="Dashboard"></div>
+    </div>
+    <div class="how-step" data-scroll="up" data-delay="300">
+      <div class="how-step-num">03</div>
+      <h3>Budgets &amp; Reports</h3>
+      <p>Review weekly, monthly, or yearly summaries. Set budgets, track subscriptions, and ask your money anything.</p>
+      <div class="how-step-phone"><img src="assets/reports-totals.png" alt="Reports"></div>
+    </div>
+  </div>
+</section>
+
+<div class="torn-edge"></div>
+<section class="cta-section" id="download">
+  <div class="cta-logo" data-scroll="scale">
+    <img src="assets/logo.jpeg" alt="TapXpense Logo">
+  </div>
+  <h2 data-scroll="up" data-delay="100">Start<br>Tracking<br>Today</h2>
+  <p data-scroll="up" data-delay="200">Native iOS expense tracking — private by default, offline-first, and built for speed. Coming soon to the App Store.</p>
+  <span class="cta-btn magnetic" data-scroll="up" data-delay="300" style="cursor: default; opacity: 0.85;">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+    App Store — Coming Soon
+  </span>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>Back Tap Logging</span><span class="dot">•</span>
+    <span class="outline">TapXpense</span><span class="dot">•</span>
+    <span>On-Device AI</span><span class="dot">•</span>
+    <span class="outline">Offline-First</span><span class="dot">•</span>
+    <span>Back Tap Logging</span><span class="dot">•</span>
+    <span class="outline">TapXpense</span><span class="dot">•</span>
+    <span>On-Device AI</span><span class="dot">•</span>
+    <span class="outline">Offline-First</span><span class="dot">•</span>
+  </div>
+</div>
+
+<footer class="footer">
+  <div>TapXpense © 2026</div>
+  <div class="footer-links">
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="https://toolfoliohub.com/project-pages/tapxpense">Support</a>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

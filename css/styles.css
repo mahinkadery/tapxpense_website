@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TapXpense — Track Every Penny</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-<style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
   --paper: #f0ebe3;
@@ -84,6 +75,7 @@ body {
 }
 @keyframes slideDown { to { transform: translateY(0); } }
 .topbar-logo { font-family: var(--serif); font-size: 14px; font-weight: 700; letter-spacing: 0.02em; text-transform: none; }
+a.topbar-logo { color: inherit; text-decoration: none; }
 .topbar-right { display: flex; gap: 24px; align-items: center; }
 .topbar-right a {
   color: var(--ink); text-decoration: none; position: relative;
@@ -668,476 +660,52 @@ body {
   .dashed-divider { margin: 0 20px; }
   .cursor-glow { display: none; }
 }
-</style>
-</head>
-<body>
 
-<svg style="position:absolute;width:0;height:0">
-  <defs>
-    <filter id="torn-filter">
-      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-  </defs>
-</svg>
-
-<!-- LOADER -->
-<div class="loader" id="loader">
-  <div class="loader-text"><span style="animation-delay:0.2s">T</span><span style="animation-delay:0.25s">A</span><span style="animation-delay:0.3s">P</span><span style="animation-delay:0.35s">X</span><span style="animation-delay:0.4s">P</span><span style="animation-delay:0.45s">E</span><span style="animation-delay:0.5s">N</span><span style="animation-delay:0.55s">S</span><span style="animation-delay:0.6s">E</span></div>
-  <div class="loader-bar"><div class="loader-bar-inner"></div></div>
-</div>
-
-<!-- CURSOR GLOW -->
-<div class="cursor-glow" id="cursorGlow"></div>
-
-<!-- TOPBAR -->
-<nav class="topbar">
-  <div class="topbar-logo">TapXpense</div>
-  <div style="font-family: var(--serif-display); font-style: italic; font-size: 13px; letter-spacing: 0.04em;">The Expense Tracker</div>
-  <div class="topbar-right">
-    <a href="#features" class="magnetic">Features</a>
-    <a href="#how" class="magnetic">How It Works</a>
-    <a href="#download" class="magnetic">Download</a>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-bg-grid"></div>
-  <div class="hero-date-row">
-    <span>Est. 2026</span>
-    <span>iOS App</span>
-    <span>Sydney, AU</span>
-  </div>
-  <h1 class="hero-masthead" id="masthead">
-    TAP<span class="line-through">XPENSE</span>
-  </h1>
-  <div class="hero-subtitle-row">
-    <div class="hero-subtitle-left">
-      <div class="word"><span style="animation-delay:2.8s">Track</span></div>
-      <div class="word"><span style="animation-delay:2.9s">Every</span></div><br>
-      <div class="word"><span style="animation-delay:3.0s">Penny,</span></div><br>
-      <div class="word"><span style="animation-delay:3.1s">Effortlessly.</span></div>
-    </div>
-    <div class="hero-subtitle-center">
-      A simple, beautiful expense tracker built for people who want clarity — not complexity. Log spending in seconds with iOS Shortcuts.
-    </div>
-    <div class="hero-subtitle-right">
-      Daily Dashboard<br>iOS Shortcut Logging<br>Category Breakdown<br>Weekly &amp; Monthly Reports
-    </div>
-  </div>
-</section>
-
-<!-- TORN EDGE -->
-<div class="torn-edge"></div>
-
-<!-- DARK FEATURES -->
-<section class="dark-section" id="features">
-  <div class="features-header">
-    <h2 data-scroll="up">YOUR<br>EXPENSES</h2>
-    <p data-scroll="up" data-delay="100">Everything you need, nothing you don't.</p>
-  </div>
-  <div class="features-grid">
-    <div class="feature-card" data-scroll="flip" data-delay="0" data-tilt>
-      <div class="feature-num">Feature 01</div>
-      <div class="feature-title">iOS Shortcut<br>Logging <span class="feature-tag">New</span></div>
-      <div class="feature-desc">Type "10 for coffee" and you're done. Log expenses from your home screen, lock screen, or Siri — no app launch needed.</div>
-    </div>
-    <div class="feature-card" data-scroll="flip-left" data-delay="100" data-tilt>
-      <div class="feature-num">Feature 02</div>
-      <div class="feature-title">Daily<br>Dashboard</div>
-      <div class="feature-desc">See your week at a glance. A clean, minimal dashboard with spending charts and recent transactions.</div>
-    </div>
-    <div class="feature-card" data-scroll="flip" data-delay="200" data-tilt>
-      <div class="feature-num">Feature 03</div>
-      <div class="feature-title">Category<br>Breakdown</div>
-      <div class="feature-desc">Food, coffee, transport — see where your money really goes. Smart categorization for better spending habits.</div>
-    </div>
-    <div class="feature-card" data-scroll="flip-left" data-delay="300" data-tilt>
-      <div class="feature-num">Feature 04</div>
-      <div class="feature-title">Weekly &amp; Monthly<br>Reports</div>
-      <div class="feature-desc">Clear summaries with breakdowns that help you stay on budget and save more.</div>
-    </div>
-  </div>
-</section>
-
-<div class="torn-edge-top"></div>
-
-<!-- SCROLL-DRIVEN 3D PHONE SHOWCASE -->
-<section class="showcase-pin" id="showcase">
-  <div class="showcase-sticky">
-    <div class="showcase-bg-text" id="showcaseBgText">EXPENSES</div>
-    <div class="showcase-intro-label">SCROLL TO EXPLORE</div>
-    <div class="showcase-progress" id="showcaseProgress">
-      <div class="showcase-dot active" data-step="0"></div>
-      <div class="showcase-dot" data-step="1"></div>
-      <div class="showcase-dot" data-step="2"></div>
-      <div class="showcase-dot" data-step="3"></div>
-    </div>
-
-    <!-- Captions -->
-    <div class="showcase-captions">
-      <div class="showcase-caption cap-left active" data-cap="0">
-        <div class="cap-num">01 — The Home Dashboard</div>
-        <h3>Your week at<br>a glance.</h3>
-        <p>A$324.24 this week, charted by day with your latest expenses below. Clean, minimal, and instantly readable.</p>
-      </div>
-      <div class="showcase-caption cap-right" data-cap="1">
-        <div class="cap-num">02 — Home-Screen Widget</div>
-        <h3>Add an expense<br>in one tap.</h3>
-        <p>See this month's spending right on your home screen — and log a new expense without ever opening the app.</p>
-      </div>
-      <div class="showcase-caption cap-left" data-cap="2">
-        <div class="cap-num">03 — Smart Insights</div>
-        <h3>It does the<br>thinking for you.</h3>
-        <p>Spend forecasts, your biggest expense, subscription totals — plus a private, on-device AI you can ask about your money.</p>
-      </div>
-      <div class="showcase-caption cap-right" data-cap="3">
-        <div class="cap-num">04 — Reports</div>
-        <h3>Week, month<br>&amp; year.</h3>
-        <p>A$324 this week, A$727 this month, A$1,011 this year. Clear totals and AI-written summaries that make sense of it all.</p>
-      </div>
-    </div>
-
-    <div class="showcase-stage">
-      <div class="showcase-phone" id="showcasePhone">
-        <div class="showcase-phone-frame">
-          <div class="showcase-phone-screens">
-            <div class="showcase-phone-notch"></div>
-            <img src="assets/home.png" alt="Home dashboard" class="active" data-screen="0">
-            <img src="assets/widget.png" alt="Home-screen widget" data-screen="1">
-            <img src="assets/insights.png" alt="Smart insights" data-screen="2">
-            <img src="assets/reports-totals.png" alt="Reports totals" data-screen="3">
-            <div class="showcase-phone-glare"></div>
-          </div>
-        </div>
-        <div class="showcase-phone-shadow" id="showcaseShadow"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="dashed-divider">
-
-<!-- STATS -->
-<div class="stats-section">
-  <div class="stat-item" data-scroll="up" data-delay="0">
-    <div class="stat-label">Seconds to Log</div>
-    <div class="stat-value"><span class="count-up" data-target="3">0</span></div>
-    <div class="stat-unit">with iOS Shortcut</div>
-  </div>
-  <div class="stat-item" data-scroll="up" data-delay="100">
-    <div class="stat-label">Categories</div>
-    <div class="stat-value">∞</div>
-    <div class="stat-unit">custom tags</div>
-  </div>
-  <div class="stat-item" data-scroll="up" data-delay="200">
-    <div class="stat-label">Report Types</div>
-    <div class="stat-value"><span class="count-up" data-target="3">0</span></div>
-    <div class="stat-unit">week / month / year</div>
-  </div>
-  <div class="stat-item" data-scroll="up" data-delay="300">
-    <div class="stat-label">App Size</div>
-    <div class="stat-value">&lt;<span class="count-up" data-target="5">0</span></div>
-    <div class="stat-unit">megabytes</div>
-  </div>
-</div>
-
-<!-- BIG TAGLINE -->
-<section class="tagline-section">
-  <div class="tagline-bg-text">TAPXPENSE</div>
-  <h2 data-scroll="scale">THE<br><span class="tagline-word-accent">EFFORTLESS</span><br>EXPENSE<br>TRACKER</h2>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="how-section" id="how">
-  <div class="how-header">
-    <h2 data-scroll="left">How It<br>Works</h2>
-    <p data-scroll="right">Three simple steps to financial clarity. No sign-up walls, no complexity.</p>
-  </div>
-  <div class="how-steps">
-    <div class="how-step" data-scroll="up" data-delay="0">
-      <div class="how-step-num">01</div>
-      <h3>Tap the Shortcut</h3>
-      <p>Add the TapXpense shortcut to your home screen. One tap opens a quick input.</p>
-      <div class="how-step-phone"><img src="assets/widget.png" alt="Widget"></div>
-    </div>
-    <div class="how-step" data-scroll="up" data-delay="150">
-      <div class="how-step-num">02</div>
-      <h3>Watch It Organize</h3>
-      <p>Expenses are sorted by date and category. Your dashboard updates in real-time.</p>
-      <div class="how-step-phone"><img src="assets/home.png" alt="Dashboard"></div>
-    </div>
-    <div class="how-step" data-scroll="up" data-delay="300">
-      <div class="how-step-num">03</div>
-      <h3>Review Reports</h3>
-      <p>Check weekly, monthly, or yearly summaries. Understand spending patterns.</p>
-      <div class="how-step-phone"><img src="assets/reports-totals.png" alt="Reports"></div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<div class="torn-edge"></div>
-<section class="cta-section" id="download">
-  <div class="cta-logo" data-scroll="scale">
-    <img src="assets/logo.jpeg" alt="TapXpense Logo">
-  </div>
-  <h2 data-scroll="up" data-delay="100">Start<br>Tracking<br>Today</h2>
-  <p data-scroll="up" data-delay="200">Join users who've simplified their expense tracking. Available now on the App Store.</p>
-  <a href="#" class="cta-btn magnetic" data-scroll="up" data-delay="300">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-    Download on App Store
-  </a>
-</section>
-
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span>Track Every Penny</span><span class="dot">•</span>
-    <span class="outline">TapXpense</span><span class="dot">•</span>
-    <span>Effortless Logging</span><span class="dot">•</span>
-    <span class="outline">iOS Shortcuts</span><span class="dot">•</span>
-    <span>Track Every Penny</span><span class="dot">•</span>
-    <span class="outline">TapXpense</span><span class="dot">•</span>
-    <span>Effortless Logging</span><span class="dot">•</span>
-    <span class="outline">iOS Shortcuts</span><span class="dot">•</span>
-  </div>
-</div>
-
-<footer class="footer">
-  <div>TapXpense © 2026</div>
-  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Support</a></div>
-</footer>
-
-<script>
-// === LOADER ===
-window.addEventListener('load', () => {
-  setTimeout(() => document.getElementById('loader').classList.add('hidden'), 1800);
-});
-
-// === CURSOR GLOW ===
-const glow = document.getElementById('cursorGlow');
-document.addEventListener('mousemove', e => {
-  glow.style.left = e.clientX + 'px';
-  glow.style.top = e.clientY + 'px';
-});
-
-// === HERO MASTHEAD CHAR SPLIT ===
-const masthead = document.getElementById('masthead');
-const html = masthead.innerHTML;
-const lineThrough = masthead.querySelector('.line-through');
-const lineThroughText = lineThrough.textContent;
-// Split TAP into chars
-const tapText = 'TAP';
-let charIndex = 0;
-let newHTML = '';
-for (let i = 0; i < tapText.length; i++) {
-  newHTML += `<span class="char" style="animation-delay:${1.9 + charIndex * 0.06}s">${tapText[i]}</span>`;
-  charIndex++;
+/* ===== LEGAL PAGES ===== */
+.topbar-simple { transform: translateY(0); animation: none; }
+.topbar-logo a { color: inherit; text-decoration: none; }
+.legal-page {
+  padding: 120px 40px 80px;
+  max-width: 780px;
+  margin: 0 auto;
 }
-newHTML += '<span class="line-through">';
-for (let i = 0; i < lineThroughText.length; i++) {
-  newHTML += `<span class="char" style="animation-delay:${1.9 + charIndex * 0.06}s">${lineThroughText[i]}</span>`;
-  charIndex++;
+.legal-page h1 {
+  font-family: var(--serif);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 900;
+  margin-bottom: 8px;
 }
-newHTML += '</span>';
-masthead.innerHTML = newHTML;
-
-// === SCROLL REVEAL ===
-const scrollEls = document.querySelectorAll('[data-scroll]');
-const scrollObs = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const delay = parseInt(entry.target.dataset.delay || 0);
-      setTimeout(() => entry.target.classList.add('in-view'), delay);
-    }
-  });
-}, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
-scrollEls.forEach(el => scrollObs.observe(el));
-
-// === 3D TILT ON FEATURE CARDS ===
-document.querySelectorAll('[data-tilt]').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const rect = card.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    const rotateX = (y - 0.5) * -12;
-    const rotateY = (x - 0.5) * 12;
-    card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-    card.style.setProperty('--mx', (x * 100) + '%');
-    card.style.setProperty('--my', (y * 100) + '%');
-  });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = '';
-  });
-});
-
-// === 3D TILT ON PHONES ===
-document.querySelectorAll('[data-tilt-phone]').forEach(wrap => {
-  wrap.addEventListener('mousemove', e => {
-    const rect = wrap.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    wrap.style.transform = `perspective(800px) rotateY(${x * 20}deg) rotateX(${-y * 15}deg)`;
-  });
-  wrap.addEventListener('mouseleave', () => {
-    wrap.style.transform = '';
-  });
-});
-
-// === MAGNETIC BUTTONS ===
-document.querySelectorAll('.magnetic').forEach(btn => {
-  btn.addEventListener('mousemove', e => {
-    const rect = btn.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
-  });
-  btn.addEventListener('mouseleave', () => {
-    btn.style.transform = '';
-  });
-});
-
-// === COUNT UP ===
-const countObs = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const el = entry.target;
-      const target = parseInt(el.dataset.target);
-      let current = 0;
-      const step = () => {
-        current++;
-        el.textContent = current;
-        if (current < target) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-      countObs.unobserve(el);
-    }
-  });
-}, { threshold: 0.5 });
-document.querySelectorAll('.count-up').forEach(el => countObs.observe(el));
-
-// === SMOOTH NAV ===
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    const t = document.querySelector(a.getAttribute('href'));
-    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-});
-
-// === PARALLAX on tagline bg text ===
-const taglineBg = document.querySelector('.tagline-bg-text');
-if (taglineBg) {
-  window.addEventListener('scroll', () => {
-    const rect = taglineBg.parentElement.getBoundingClientRect();
-    const progress = -rect.top / window.innerHeight;
-    taglineBg.style.transform = `translate(-50%, -50%) translateX(${progress * 80}px) scale(${1 + progress * 0.05})`;
-  }, { passive: true });
+.legal-date { font-size: 13px; color: var(--ink-light); margin-bottom: 32px; }
+.legal-summary {
+  background: var(--paper-dark);
+  border-left: 3px solid var(--accent);
+  padding: 20px 24px;
+  margin-bottom: 40px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
 }
-
-// === SCROLL-DRIVEN 3D PHONE SHOWCASE ===
-(function() {
-  const pin = document.getElementById('showcase');
-  const phone = document.getElementById('showcasePhone');
-  const shadow = document.getElementById('showcaseShadow');
-  const bgText = document.getElementById('showcaseBgText');
-  const screens = document.querySelectorAll('.showcase-phone-screens img');
-  const captions = document.querySelectorAll('.showcase-caption');
-  const dots = document.querySelectorAll('.showcase-dot');
-  if (!pin || !phone) return;
-
-  const numSteps = 4;
-  const bgWords = ['HOME', 'WIDGET', 'INSIGHTS', 'REPORTS'];
-
-  // Easing
-  const easeInOut = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-  const lerp = (a, b, t) => a + (b - a) * t;
-
-  let currentStep = -1;
-  let raf = null;
-
-  function update() {
-    const rect = pin.getBoundingClientRect();
-    const winH = window.innerHeight;
-    const total = pin.offsetHeight - winH;
-    // 0 → 1 across the entire pinned scroll
-    const progress = Math.max(0, Math.min(1, -rect.top / total));
-
-    // Determine current narrative step (0..3)
-    const stepFloat = progress * (numSteps - 1);
-    const step = Math.round(stepFloat);
-    const localT = stepFloat - Math.floor(stepFloat);
-    const localEased = easeInOut(localT);
-
-    // === 3D phone transforms — interpolate per beat ===
-    // Define keyframes for each step: rotateY, rotateX, rotateZ, translateZ, translateY, translateX, scale
-    const keys = [
-      { ry: -18, rx: 6,  rz: -2, tz: 0,    ty: 0,   tx: -60, s: 1.0 },  // intro: tilted left
-      { ry: 18,  rx: -4, rz: 3,  tz: 80,   ty: -20, tx: 60,  s: 1.05 }, // shortcut: tilted right, popped forward
-      { ry: -10, rx: 8,  rz: -4, tz: -40,  ty: 0,   tx: -40, s: 0.95 }, // reports: tilted back-left
-      { ry: 0,   rx: 0,  rz: 0,  tz: 60,   ty: 0,   tx: 0,   s: 1.1 }   // hero pose: front and large
-    ];
-
-    const i0 = Math.min(Math.floor(stepFloat), numSteps - 2);
-    const i1 = i0 + 1;
-    const t = stepFloat - i0;
-    const e = easeInOut(Math.max(0, Math.min(1, t)));
-
-    const k0 = keys[i0];
-    const k1 = keys[i1];
-    const ry = lerp(k0.ry, k1.ry, e);
-    const rx = lerp(k0.rx, k1.rx, e);
-    const rz = lerp(k0.rz, k1.rz, e);
-    const tz = lerp(k0.tz, k1.tz, e);
-    const ty = lerp(k0.ty, k1.ty, e);
-    const tx = lerp(k0.tx, k1.tx, e);
-    const s  = lerp(k0.s,  k1.s,  e);
-
-    phone.style.transform =
-      `translate3d(${tx}px, ${ty}px, 0) ` +
-      `scale(${s}) ` +
-      `rotateY(${ry}deg) rotateX(${rx}deg) rotateZ(${rz}deg) ` +
-      `translateZ(${tz}px)`;
-
-    // Shadow follows but flatter
-    shadow.style.transform = `scaleX(${1 - Math.abs(ry) * 0.01}) scaleY(${1 - Math.abs(tz) * 0.002}) translateY(${tz * 0.1}px)`;
-    shadow.style.opacity = 0.3 + Math.abs(tz) * 0.002;
-
-    // Background text parallax — drifts horizontally with scroll
-    bgText.style.transform = `translate(${-50 - progress * 30}%, -50%) scale(${1 + progress * 0.1})`;
-
-    // Discrete step changes
-    if (step !== currentStep) {
-      currentStep = step;
-      const safeStep = Math.max(0, Math.min(numSteps - 1, step));
-
-      screens.forEach((img, i) => {
-        img.classList.toggle('active', i === safeStep);
-      });
-      captions.forEach((cap, i) => {
-        cap.classList.toggle('active', i === safeStep);
-      });
-      dots.forEach((d, i) => {
-        d.classList.toggle('active', i === safeStep);
-      });
-      if (bgWords[safeStep]) bgText.textContent = bgWords[safeStep];
-    }
-  }
-
-  function onScroll() {
-    if (raf) return;
-    raf = requestAnimationFrame(() => {
-      raf = null;
-      update();
-    });
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll, { passive: true });
-  update();
-})();
-</script>
-</body>
-</html>
+.legal-page h2 {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 700;
+  margin: 40px 0 16px;
+  color: var(--ink);
+}
+.legal-page p,
+.legal-page li {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--ink-light);
+  margin-bottom: 16px;
+}
+.legal-page ul { padding-left: 24px; margin-bottom: 16px; }
+.legal-page a { color: var(--accent); }
+.legal-contact {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(26, 26, 24, 0.15);
+}
+@media (max-width: 768px) {
+  .legal-page { padding: 100px 20px 60px; }
+}

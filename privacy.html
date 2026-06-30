@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="TapXpense Privacy Policy — how we handle your expense data.">
+<title>Privacy Policy — TapXpense</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<nav class="topbar topbar-simple">
+  <div class="topbar-logo"><a href="index.html">TapXpense</a></div>
+  <div style="font-family: var(--serif-display); font-style: italic; font-size: 13px; letter-spacing: 0.04em;">Privacy Policy</div>
+  <div class="topbar-right">
+    <a href="index.html">Home</a>
+    <a href="terms.html">Terms</a>
+  </div>
+</nav>
+
+<main class="legal-page">
+  <h1>Privacy Policy</h1>
+  <p class="legal-date">Last updated: 28 June 2026</p>
+
+  <div class="legal-summary">
+    <strong>In short:</strong> You can use TapXpense completely anonymously — no name and no email required. Your data is never sold, shared with advertisers, or used for tracking. It is saved on your device and, so it can sync and be backed up, in a private cloud database that only you can access. The sections below explain exactly what happens to your information.
+  </div>
+
+  <p>This Privacy Policy describes how TapXpense ("we", "our", or "the app") handles information when you use our mobile application. By installing or using TapXpense, you consent to the practices described below.</p>
+
+  <h2>1. Information We Collect</h2>
+
+  <p><strong>On-device data.</strong> When you record an expense, the app stores the amount, title, category, payment method, account, date, and any optional notes locally on your iPhone using Apple's SwiftData framework. Your name and preferred currency are stored the same way.</p>
+
+  <p><strong>Account information.</strong> If you sign in with Google, we receive your name and email address from Google in order to identify your account and synchronise your data. If you continue as a guest, we create an anonymous account on our backend identified only by a randomly generated user ID; we do not collect your name or email.</p>
+
+  <p><strong>Expense parsing.</strong> When you log an expense via the in-app form or via the Back Tap shortcut, the text you enter (for example, "10 for coffee") may be sent to a third-party language-model API (OpenRouter, which routes to providers such as Anthropic Claude or Google Gemini) for the purpose of suggesting a category and icon. These requests do not include your name, email, account ID, or any other identifier — only the phrase you typed is transmitted. On supported devices this categorisation runs on-device and no text leaves your iPhone.</p>
+
+  <p><strong>Diagnostic information.</strong> The app does not collect crash reports, analytics events, advertising identifiers, or device fingerprints. We do not integrate with any analytics SDK.</p>
+
+  <h2>2. How We Use Your Information</h2>
+
+  <p>We use the information described above only to:</p>
+  <ul>
+    <li>Display your expenses, accounts, and reports inside the app.</li>
+    <li>Sync your data across the devices on which you sign in with the same account.</li>
+    <li>Generate category suggestions for the expenses you log.</li>
+  </ul>
+  <p>We do not use your data for advertising, profiling, or any form of targeted marketing.</p>
+
+  <h2>3. How Your Information Is Stored</h2>
+
+  <p>Your data is stored in two places:</p>
+  <ul>
+    <li>Locally on your device, in the app's private container, encrypted by iOS at rest.</li>
+    <li>In our Supabase backend (operated by Supabase, Inc.), in a private Postgres database protected by row-level security policies that ensure each user can only access their own rows. Connections are encrypted in transit using TLS 1.2 or higher.</li>
+  </ul>
+  <p>Guest (anonymous) users' data is stored under their anonymous user ID. If you uninstall the app and your iOS Keychain is not synced via iCloud Keychain, your guest session may not be recoverable.</p>
+
+  <h2>4. Sharing With Third Parties</h2>
+
+  <p>We do not sell, rent, or share your personal information with advertisers or data brokers. The app interacts with the following third-party services strictly to provide the functionality you have requested:</p>
+  <ul>
+    <li>Supabase, Inc. — backend storage and authentication.</li>
+    <li>Google LLC — only when you choose to sign in with Google.</li>
+    <li>OpenRouter, Inc. and the underlying model provider (such as Anthropic or Google) — only to categorise the expense phrase you typed, when on-device categorisation is unavailable.</li>
+  </ul>
+  <p>Each of these providers has its own privacy policy. We encourage you to review them.</p>
+
+  <h2>5. Data Retention and Deletion</h2>
+
+  <p>Your local data persists on your device until you delete the app or sign out. Your backend data persists until you delete it from within the app, sign out and re-register, or contact us to request account deletion. To delete all of your data:</p>
+  <ul>
+    <li>Delete every expense and account from inside the app, then sign out, or</li>
+    <li>Contact us to request full account deletion (see Contact below).</li>
+  </ul>
+  <p>Anonymous (guest) accounts that have been inactive for an extended period may be removed automatically by a scheduled cleanup process.</p>
+
+  <h2>6. Children's Privacy</h2>
+
+  <p>TapXpense is not directed to children under the age of 13, and we do not knowingly collect information from anyone under 13. If you believe a child has provided us with personal information, please contact us so we can delete it.</p>
+
+  <h2>7. Your Rights</h2>
+
+  <p>Depending on where you live, you may have rights under the GDPR, CCPA, or similar laws — including the right to access, correct, or delete the personal data we hold about you, and the right to withdraw consent at any time. To exercise any of these rights, please contact us using the link below.</p>
+
+  <h2>8. Changes to This Policy</h2>
+
+  <p>We may update this Privacy Policy from time to time. The "Last updated" date at the top of this page will reflect any changes. Material changes will be communicated via an in-app notice on first launch after the change.</p>
+
+  <h2>9. Contact</h2>
+
+  <p class="legal-contact">If you have any questions about this Privacy Policy or your data, please <a href="https://toolfoliohub.com/project-pages/tapxpense">contact us</a>.</p>
+</main>
+
+<footer class="footer">
+  <div>TapXpense © 2026</div>
+  <div class="footer-links">
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="https://toolfoliohub.com/project-pages/tapxpense">Support</a>
+  </div>
+</footer>
+
+</body>
+</html>
