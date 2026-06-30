@@ -23,10 +23,10 @@
 
 <main class="legal-page">
   <h1>Privacy Policy</h1>
-  <p class="legal-date">Last updated: 28 June 2026</p>
+  <p class="legal-date">Last updated: 1 July 2026</p>
 
   <div class="legal-summary">
-    <strong>In short:</strong> You can use TapXpense completely anonymously — no name and no email required. Your data is never sold, shared with advertisers, or used for tracking. It is saved on your device and, so it can sync and be backed up, in a private cloud database that only you can access. The sections below explain exactly what happens to your information.
+    <strong>In short:</strong> You can use TapXpense completely anonymously. As a guest, your expenses stay on your device — we never upload them, sell your data, show ads, or track you. Cloud backup and cross-device sync happen only if you choose to sign in with Apple or Google. The single exception for guests: the short phrase you type to log an expense may be sent — with no name or identifier attached — to categorise it, and only when your iPhone can't do that on its own.
   </div>
 
   <p>This Privacy Policy describes how TapXpense ("we", "our", or "the app") handles information when you use our mobile application. By installing or using TapXpense, you consent to the practices described below.</p>
@@ -35,9 +35,11 @@
 
   <p><strong>On-device data.</strong> When you record an expense, the app stores the amount, title, category, payment method, account, date, and any optional notes locally on your iPhone using Apple's SwiftData framework. Your name and preferred currency are stored the same way.</p>
 
-  <p><strong>Account information.</strong> If you sign in with Google, we receive your name and email address from Google in order to identify your account and synchronise your data. If you continue as a guest, we create an anonymous account on our backend identified only by a randomly generated user ID; we do not collect your name or email.</p>
+  <p><strong>Account information.</strong> If you sign in with Apple or Google, we receive your name and email address (Apple lets you hide your real email) in order to identify your account and synchronise your data across your devices. If you stay a guest, the app runs entirely on your device — we do not create an account for you, and your expense data is never sent to our servers.</p>
 
-  <p><strong>Expense parsing.</strong> When you log an expense via the in-app form or via the Back Tap shortcut, the text you enter (for example, "10 for coffee") may be sent to a third-party language-model API (OpenRouter, which routes to providers such as Anthropic Claude or Google Gemini) for the purpose of suggesting a category and icon. These requests do not include your name, email, account ID, or any other identifier — only the phrase you typed is transmitted. On supported devices this categorisation runs on-device and no text leaves your iPhone.</p>
+  <p><strong>Expense parsing.</strong> When you log an expense by typing or via the Back Tap shortcut, the text you enter (for example, "10 for coffee") may be sent to a third-party language-model service (OpenRouter, which routes to providers such as Anthropic Claude or Google Gemini) to suggest a category and icon. These requests never include your name, email, account ID, or any other identifier — only the phrase itself. On supported devices this categorisation runs entirely on-device and nothing is transmitted. For guests, this categorisation request is the only data that ever leaves the device.</p>
+
+  <p><strong>Notion (optional).</strong> If you choose to connect Notion, the expense details you sync — title, amount, currency, category, date, notes, and account name — are sent to the Notion database you select so they appear in your own workspace. We store an access token for your Notion workspace on our backend so syncing can work; disconnecting Notion in Settings deletes that token. Connecting Notion requires signing in.</p>
 
   <p><strong>Diagnostic information.</strong> The app does not collect crash reports, analytics events, advertising identifiers, or device fingerprints. We do not integrate with any analytics SDK.</p>
 
@@ -48,36 +50,39 @@
     <li>Display your expenses, accounts, and reports inside the app.</li>
     <li>Sync your data across the devices on which you sign in with the same account.</li>
     <li>Generate category suggestions for the expenses you log.</li>
+    <li>Send your expenses to your own Notion database, if and when you connect Notion.</li>
   </ul>
   <p>We do not use your data for advertising, profiling, or any form of targeted marketing.</p>
 
   <h2>3. How Your Information Is Stored</h2>
 
-  <p>Your data is stored in two places:</p>
+  <p>Where your data lives depends on whether you sign in:</p>
   <ul>
-    <li>Locally on your device, in the app's private container, encrypted by iOS at rest.</li>
-    <li>In our Supabase backend (operated by Supabase, Inc.), in a private Postgres database protected by row-level security policies that ensure each user can only access their own rows. Connections are encrypted in transit using TLS 1.2 or higher.</li>
+    <li><strong>Always — locally on your device</strong>, in the app's private container, encrypted by iOS at rest.</li>
+    <li><strong>Only if you sign in with Apple or Google</strong> — a copy is also stored in our Supabase backend (operated by Supabase, Inc.), in a private Postgres database protected by row-level security policies that ensure each user can only access their own rows. Connections are encrypted in transit using TLS 1.2 or higher.</li>
   </ul>
-  <p>Guest (anonymous) users' data is stored under their anonymous user ID. If you uninstall the app and your iOS Keychain is not synced via iCloud Keychain, your guest session may not be recoverable.</p>
+  <p>Guests are never stored on our backend — guest data exists only on the device. Because of that, please keep your own backup (Settings → Export); uninstalling the app permanently removes guest data.</p>
 
   <h2>4. Sharing With Third Parties</h2>
 
   <p>We do not sell, rent, or share your personal information with advertisers or data brokers. The app interacts with the following third-party services strictly to provide the functionality you have requested:</p>
   <ul>
-    <li>Supabase, Inc. — backend storage and authentication.</li>
-    <li>Google LLC — only when you choose to sign in with Google.</li>
-    <li>OpenRouter, Inc. and the underlying model provider (such as Anthropic or Google) — only to categorise the expense phrase you typed, when on-device categorisation is unavailable.</li>
+    <li><strong>Supabase, Inc.</strong> — cloud storage and authentication, used only when you sign in.</li>
+    <li><strong>Apple Inc.</strong> — only when you choose to Sign in with Apple.</li>
+    <li><strong>Google LLC</strong> — only when you choose to sign in with Google.</li>
+    <li><strong>OpenRouter, Inc.</strong> and the underlying model provider (such as Anthropic or Google) — only to categorise the expense phrase you typed, when on-device categorisation is unavailable.</li>
+    <li><strong>Notion Labs, Inc.</strong> — only when you choose to connect Notion; the expense details you sync are sent to the Notion database you select.</li>
   </ul>
   <p>Each of these providers has its own privacy policy. We encourage you to review them.</p>
 
   <h2>5. Data Retention and Deletion</h2>
 
-  <p>Your local data persists on your device until you delete the app or sign out. Your backend data persists until you delete it from within the app, sign out and re-register, or contact us to request account deletion. To delete all of your data:</p>
+  <p>Local data persists on your device until you delete the data or remove the app. For guests, deleting the app permanently removes all data, as there is no server copy. If you are signed in, your backend data persists until you delete it from within the app, sign out, or contact us to request deletion. Disconnecting Notion in Settings deletes the access token we hold for your Notion workspace.</p>
+  <p>To delete all of your data:</p>
   <ul>
-    <li>Delete every expense and account from inside the app, then sign out, or</li>
-    <li>Contact us to request full account deletion (see Contact below).</li>
+    <li>Delete your expenses and accounts from inside the app, and</li>
+    <li>If you are signed in, sign out or contact us to request full account deletion (see Contact below).</li>
   </ul>
-  <p>Anonymous (guest) accounts that have been inactive for an extended period may be removed automatically by a scheduled cleanup process.</p>
 
   <h2>6. Children's Privacy</h2>
 
