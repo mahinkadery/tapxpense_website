@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TapXpense — Track Every Penny</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --paper: #f0ebe3;
+  --paper-dark: #e6dfd4;
+  --ink: #1a1a18;
+  --ink-light: #4a4a45;
+  --accent: #c54b2a;
+  --serif: 'Playfair Display', 'Georgia', serif;
+  --serif-display: 'DM Serif Display', 'Georgia', serif;
+  --sans: 'DM Sans', 'Helvetica Neue', sans-serif;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== LOADER ===== */
+.loader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 20px;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-text {
+  font-family: var(--serif); font-weight: 900;
+  font-size: clamp(48px, 10vw, 120px);
+  color: var(--paper);
+  overflow: hidden;
+}
+.loader-text span {
+  display: inline-block;
+  transform: translateY(120%);
+  animation: loaderUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes loaderUp {
+  to { transform: translateY(0); }
+}
+.loader-bar {
+  width: 200px; height: 2px; background: #333; border-radius: 2px; overflow: hidden;
+}
+.loader-bar-inner {
+  height: 100%; background: var(--accent);
+  animation: loaderFill 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes loaderFill { to { width: 100%; } }
+.loader-bar-inner { width: 0%; }
+
+/* ===== CURSOR FOLLOWER ===== */
+.cursor-glow {
+  position: fixed; width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(197,75,42,0.06) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+  transform: translate(-50%, -50%);
+  transition: left 0.3s ease, top 0.3s ease;
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 40px;
+  background: rgba(240, 235, 227, 0.85);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(26,26,24,0.1);
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
+  transform: translateY(-100%);
+  animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.8s forwards;
+}
+@keyframes slideDown { to { transform: translateY(0); } }
+.topbar-logo { font-family: var(--serif); font-size: 14px; font-weight: 700; letter-spacing: 0.02em; text-transform: none; }
+.topbar-right { display: flex; gap: 24px; align-items: center; }
+.topbar-right a {
+  color: var(--ink); text-decoration: none; position: relative;
+  transition: color 0.3s;
+}
+.topbar-right a::after {
+  content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px;
+  background: var(--accent); transition: width 0.3s;
+}
+.topbar-right a:hover::after { width: 100%; }
+.topbar-right a:hover { color: var(--accent); }
+
+/* ===== HERO ===== */
+.hero {
+  padding: 120px 40px 0; min-height: 100vh;
+  perspective: 1200px;
+  border-bottom: 1px solid var(--ink);
+  position: relative; overflow: hidden;
+}
+.hero-bg-grid {
+  position: absolute; inset: 0; opacity: 0.03;
+  background-image:
+    linear-gradient(var(--ink) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ink) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridShift 20s linear infinite;
+}
+@keyframes gridShift { to { background-position: 60px 60px; } }
+
+.hero-date-row {
+  display: flex; justify-content: space-between;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 20px; color: var(--ink-light);
+}
+.hero-date-row span {
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-date-row span:nth-child(1) { animation-delay: 1.9s; }
+.hero-date-row span:nth-child(2) { animation-delay: 2.0s; }
+.hero-date-row span:nth-child(3) { animation-delay: 2.1s; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+.hero-masthead {
+  font-family: var(--serif); font-weight: 900;
+  font-size: clamp(80px, 14vw, 200px);
+  line-height: 0.88; letter-spacing: -0.03em;
+  text-align: center; padding: 20px 0 30px;
+  position: relative;
+}
+.hero-masthead .char {
+  display: inline-block;
+  opacity: 0; transform: translateY(100%) rotateX(-80deg);
+  animation: charReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: bottom center;
+}
+@keyframes charReveal { to { opacity: 1; transform: translateY(0) rotateX(0deg); } }
+
+.hero-masthead .line-through { position: relative; display: inline; }
+.hero-masthead .line-through::after {
+  content: ''; position: absolute;
+  left: -5%; right: -5%; top: 52%; height: 6px;
+  background: var(--accent);
+  transform: scaleX(0); transform-origin: left;
+  animation: lineGrow 0.8s cubic-bezier(0.16, 1, 0.3, 1) 2.6s forwards;
+}
+@keyframes lineGrow { to { transform: scaleX(1); } }
+
+.hero-subtitle-row {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 30px; align-items: start; padding: 20px 0 40px;
+  border-top: 1px solid var(--ink);
+}
+.hero-subtitle-left {
+  font-family: var(--serif); font-size: clamp(28px, 4vw, 52px);
+  font-weight: 900; line-height: 1.05;
+}
+.hero-subtitle-left .word {
+  display: inline-block; overflow: hidden;
+}
+.hero-subtitle-left .word span {
+  display: inline-block; opacity: 0; transform: translateY(100%);
+  animation: wordUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes wordUp { to { opacity: 1; transform: translateY(0); } }
+.hero-subtitle-center {
+  font-size: 13px; line-height: 1.6; max-width: 240px;
+  color: var(--ink-light); padding-top: 6px;
+  opacity: 0; animation: fadeUp 0.8s ease 3s forwards;
+}
+.hero-subtitle-right {
+  text-align: right; font-family: var(--sans); font-size: 13px;
+  line-height: 1.8; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em;
+  opacity: 0; animation: fadeUp 0.8s ease 3.1s forwards;
+}
+
+/* 3D floating phone in hero */
+.hero-phone-float {
+  position: absolute; right: 6%; bottom: -60px;
+  width: 180px; perspective: 800px;
+  opacity: 0; animation: floatIn 1s cubic-bezier(0.16, 1, 0.3, 1) 2.8s forwards;
+  z-index: 2;
+}
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(60px) scale(0.8); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.hero-phone-float .phone-3d {
+  transform-style: preserve-3d;
+  animation: phoneFloat 6s ease-in-out infinite;
+}
+@keyframes phoneFloat {
+  0%, 100% { transform: rotateY(-8deg) rotateX(4deg) translateY(0); }
+  50% { transform: rotateY(-3deg) rotateX(2deg) translateY(-15px); }
+}
+.hero-phone-float .phone-3d-inner {
+  background: #fff; border-radius: 32px; padding: 10px;
+  box-shadow:
+    0 40px 80px rgba(0,0,0,0.18),
+    0 0 0 1px rgba(0,0,0,0.05),
+    20px 20px 60px rgba(0,0,0,0.1);
+  transform-style: preserve-3d;
+}
+.hero-phone-float .phone-3d-inner img {
+  width: 100%; border-radius: 24px; display: block;
+}
+.hero-phone-float .phone-shadow {
+  position: absolute; bottom: -30px; left: 10%; right: 10%; height: 40px;
+  background: rgba(0,0,0,0.15); border-radius: 50%;
+  filter: blur(20px);
+  animation: shadowFloat 6s ease-in-out infinite;
+}
+@keyframes shadowFloat {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(0.85); opacity: 0.3; }
+}
+
+/* ===== TORN EDGES ===== */
+.torn-edge {
+  width: 100%; height: 50px; background: var(--ink);
+  position: relative; overflow: hidden;
+}
+.torn-edge::after {
+  content: ''; position: absolute; bottom: -1px; left: -10px; right: -10px;
+  height: 30px; background: var(--paper);
+  border-radius: 80% 60% 70% 50% / 100% 100% 0% 0%;
+  filter: url(#torn-filter);
+}
+.torn-edge-top {
+  width: 100%; height: 50px; background: var(--ink);
+  position: relative; overflow: hidden;
+}
+.torn-edge-top::before {
+  content: ''; position: absolute; top: -1px; left: -10px; right: -10px;
+  height: 30px; background: var(--paper);
+  border-radius: 0% 0% 70% 80% / 0% 0% 100% 100%;
+  filter: url(#torn-filter);
+}
+
+/* ===== SCROLL REVEAL ===== */
+[data-scroll] {
+  opacity: 0; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-scroll="up"] { transform: translateY(60px); }
+[data-scroll="left"] { transform: translateX(-80px); }
+[data-scroll="right"] { transform: translateX(80px); }
+[data-scroll="scale"] { transform: scale(0.88) rotateX(8deg); }
+[data-scroll="flip"] { transform: perspective(800px) rotateY(30deg); }
+[data-scroll="flip-left"] { transform: perspective(800px) rotateY(-30deg); }
+[data-scroll].in-view {
+  opacity: 1 !important;
+  transform: translateY(0) translateX(0) scale(1) rotateX(0deg) rotateY(0deg) !important;
+}
+
+/* ===== DARK FEATURES ===== */
+.dark-section {
+  background: var(--ink); color: var(--paper);
+  padding: 100px 40px; perspective: 1000px;
+}
+.features-header { text-align: center; margin-bottom: 70px; }
+.features-header h2 {
+  font-family: var(--serif); font-weight: 900;
+  font-size: clamp(48px, 8vw, 120px); line-height: 0.95; letter-spacing: -0.02em;
+}
+.features-header p { font-size: 15px; color: #a09e98; margin-top: 16px; letter-spacing: 0.03em; }
+.features-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 2px; max-width: 1100px; margin: 0 auto;
+}
+.feature-card {
+  border: 1px solid #333; padding: 44px 36px;
+  position: relative; overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s;
+  transform-style: preserve-3d;
+  cursor: default;
+}
+.feature-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(197,75,42,0.08) 0%, transparent 60%);
+  opacity: 0; transition: opacity 0.4s;
+}
+.feature-card:hover::before { opacity: 1; }
+.feature-card:hover { background: #222; transform: translateZ(10px); }
+.feature-num {
+  font-family: var(--serif); font-size: 11px; color: #555;
+  text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 16px;
+}
+.feature-title {
+  font-family: var(--serif); font-size: 28px; font-weight: 700;
+  margin-bottom: 12px; line-height: 1.15;
+}
+.feature-desc { font-size: 14px; line-height: 1.6; color: #a09e98; }
+.feature-tag {
+  display: inline-block; background: var(--accent); color: white;
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 3px 8px; border-radius: 2px; margin-left: 8px; vertical-align: middle;
+}
+
+/* ===== SCROLL-DRIVEN 3D PHONE SHOWCASE ===== */
+.showcase-pin {
+  position: relative;
+  height: 400vh; /* 4 viewports of scroll = 4 narrative beats */
+  background: linear-gradient(180deg, var(--paper) 0%, #ebe5db 50%, var(--paper) 100%);
+}
+.showcase-sticky {
+  position: sticky; top: 0;
+  height: 100vh; width: 100%;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  perspective: 1400px;
+  perspective-origin: 50% 50%;
+}
+.showcase-bg-text {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--serif); font-weight: 900;
+  font-size: clamp(140px, 22vw, 360px);
+  letter-spacing: -0.04em; line-height: 0.9;
+  color: transparent; -webkit-text-stroke: 1px rgba(26,26,24,0.08);
+  white-space: nowrap; pointer-events: none;
+  will-change: transform;
+}
+.showcase-stage {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  display: flex; align-items: center; justify-content: center;
+}
+.showcase-phone {
+  position: relative;
+  width: 280px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.showcase-phone-frame {
+  background: #1a1a18; border-radius: 44px;
+  padding: 14px;
+  box-shadow:
+    0 60px 120px rgba(0,0,0,0.25),
+    0 30px 60px rgba(0,0,0,0.15),
+    0 0 0 1.5px rgba(0,0,0,0.08),
+    inset 0 2px 4px rgba(255,255,255,0.08);
+  position: relative;
+  transform-style: preserve-3d;
+}
+.showcase-phone-screens {
+  position: relative;
+  border-radius: 32px; overflow: hidden;
+  aspect-ratio: 9/19.5;
+  background: #000;
+}
+.showcase-phone-screens img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: top;
+  display: block;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.showcase-phone-screens img.active {
+  opacity: 1;
+  transform: scale(1);
+}
+.showcase-phone-glare {
+  position: absolute; inset: 0; border-radius: 32px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.06) 100%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.showcase-phone-notch {
+  position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
+  width: 90px; height: 26px; background: #000;
+  border-radius: 14px; z-index: 5;
+  box-shadow: inset 0 0 4px rgba(255,255,255,0.05);
+}
+.showcase-phone-shadow {
+  position: absolute; left: 5%; right: 5%; bottom: -50px;
+  height: 50px; background: rgba(0,0,0,0.25);
+  filter: blur(30px); border-radius: 50%;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+/* Narrative captions that crossfade with scroll */
+.showcase-captions {
+  position: absolute; left: 0; right: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.showcase-caption {
+  position: absolute;
+  width: 320px;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.showcase-caption.active { opacity: 1; }
+.showcase-caption .cap-num {
+  font-family: var(--serif); font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.18em;
+  color: var(--accent); margin-bottom: 14px; font-weight: 700;
+}
+.showcase-caption h3 {
+  font-family: var(--serif); font-weight: 900;
+  font-size: clamp(36px, 4vw, 56px); line-height: 1.02;
+  letter-spacing: -0.02em; margin-bottom: 16px;
+}
+.showcase-caption p {
+  font-size: 15px; color: var(--ink-light);
+  line-height: 1.6;
+}
+.cap-left { left: 8%; top: 50%; transform: translateY(-50%) translateX(-30px); }
+.cap-left.active { transform: translateY(-50%) translateX(0); }
+.cap-right { right: 8%; top: 50%; transform: translateY(-50%) translateX(30px); text-align: right; }
+.cap-right.active { transform: translateY(-50%) translateX(0); }
+
+/* Progress dots */
+.showcase-progress {
+  position: absolute; right: 30px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 12px;
+  z-index: 6;
+}
+.showcase-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(26,26,24,0.2);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.showcase-dot.active {
+  background: var(--accent);
+  transform: scale(1.6);
+  box-shadow: 0 0 0 4px rgba(197,75,42,0.15);
+}
+
+/* Section intro at top of pinned area */
+.showcase-intro-label {
+  position: absolute; top: 60px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+  color: var(--ink-light); z-index: 5;
+  display: flex; align-items: center; gap: 12px;
+}
+.showcase-intro-label::before, .showcase-intro-label::after {
+  content: ''; width: 30px; height: 1px; background: var(--ink-light);
+}
+
+/* Floating particles */
+.showcase-particle {
+  position: absolute; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--accent);
+  opacity: 0; pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ===== STATS ===== */
+.stats-section {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+}
+.stat-item {
+  padding: 50px 30px; border-right: 1px solid var(--ink);
+  text-align: center; position: relative; overflow: hidden;
+  cursor: default; transition: background 0.3s;
+}
+.stat-item:last-child { border-right: none; }
+.stat-item:hover { background: var(--paper-dark); }
+.stat-item:hover .stat-value { transform: scale(1.1); }
+.stat-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--ink-light); margin-bottom: 8px;
+}
+.stat-value {
+  font-family: var(--serif); font-size: clamp(40px, 5vw, 72px);
+  font-weight: 900; line-height: 1;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.stat-unit { font-size: 14px; font-weight: 500; color: var(--ink-light); margin-top: 4px; }
+
+/* ===== COUNTER ANIMATION ===== */
+.count-up { display: inline-block; }
+
+/* ===== BIG TAGLINE w/ PARALLAX ===== */
+.tagline-section {
+  padding: 140px 40px; text-align: center;
+  position: relative; overflow: hidden; perspective: 600px;
+}
+.tagline-section h2 {
+  font-family: var(--serif); font-weight: 900;
+  font-size: clamp(50px, 10vw, 160px); line-height: 0.92; letter-spacing: -0.03em;
+}
+.tagline-word-accent {
+  color: var(--accent); font-style: italic; font-family: var(--serif-display);
+  display: inline-block;
+  animation: accentPulse 4s ease-in-out infinite;
+}
+@keyframes accentPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+.tagline-bg-text {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-family: var(--serif); font-weight: 900; font-size: 30vw;
+  color: transparent; -webkit-text-stroke: 1px rgba(26,26,24,0.04);
+  white-space: nowrap; pointer-events: none; z-index: -1;
+}
+
+/* ===== HOW IT WORKS - 3D CARDS ===== */
+.how-section { padding: 100px 40px; border-top: 1px solid var(--ink); }
+.how-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  max-width: 1100px; margin: 0 auto 70px;
+}
+.how-header h2 {
+  font-family: var(--serif); font-weight: 900;
+  font-size: clamp(36px, 5vw, 64px); line-height: 1;
+}
+.how-header p {
+  font-size: 14px; color: var(--ink-light); max-width: 260px;
+  text-align: right; line-height: 1.5;
+}
+.how-steps {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; max-width: 1100px; margin: 0 auto;
+  perspective: 1200px;
+}
+.how-step {
+  border: 1px solid var(--ink); padding: 40px 32px;
+  background: var(--paper); position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s;
+  cursor: default;
+}
+.how-step:hover {
+  transform: translateY(-8px) rotateX(2deg) rotateY(-2deg);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.05);
+}
+.how-step-num {
+  font-family: var(--serif); font-size: 64px; font-weight: 900;
+  color: transparent; -webkit-text-stroke: 1.5px var(--ink);
+  line-height: 1; margin-bottom: 20px;
+}
+.how-step h3 { font-family: var(--serif); font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+.how-step p { font-size: 14px; color: var(--ink-light); line-height: 1.6; }
+.how-step-phone {
+  margin-top: 24px; border-radius: 20px; overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+}
+.how-step:hover .how-step-phone { transform: translateZ(20px); }
+.how-step-phone img { width: 100%; display: block; }
+
+/* ===== CTA ===== */
+.cta-section {
+  background: var(--ink); color: var(--paper);
+  padding: 120px 40px; text-align: center;
+  perspective: 800px; position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(197,75,42,0.12) 0%, transparent 60%);
+}
+.cta-logo {
+  width: 90px; height: 90px; border-radius: 22px;
+  margin: 0 auto 30px; overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  animation: logoBob 4s ease-in-out infinite;
+}
+@keyframes logoBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+.cta-logo img { width: 100%; height: 100%; object-fit: cover; }
+.cta-section h2 {
+  font-family: var(--serif); font-weight: 900;
+  font-size: clamp(40px, 7vw, 100px); line-height: 0.95;
+  margin-bottom: 24px; letter-spacing: -0.02em;
+  position: relative; z-index: 1;
+}
+.cta-section > p {
+  font-size: 16px; color: #a09e98; margin-bottom: 40px;
+  max-width: 440px; margin-left: auto; margin-right: auto;
+  line-height: 1.6; position: relative; z-index: 1;
+}
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: var(--paper); color: var(--ink);
+  font-family: var(--sans); font-size: 15px; font-weight: 700;
+  padding: 18px 40px; border: none; border-radius: 50px;
+  cursor: pointer; text-decoration: none;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+  letter-spacing: 0.02em; position: relative; z-index: 1;
+  overflow: hidden;
+}
+.cta-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--accent); transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1; border-radius: 50px;
+}
+.cta-btn:hover::before { transform: translateX(0); }
+.cta-btn:hover {
+  color: white; transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 16px 50px rgba(197,75,42,0.3);
+}
+.cta-btn svg { width: 20px; height: 20px; transition: color 0.4s; }
+
+/* ===== MARQUEE ===== */
+.marquee-wrap {
+  border-top: 1px solid #333; border-bottom: 1px solid #333;
+  overflow: hidden; background: var(--ink); padding: 22px 0;
+}
+.marquee-track {
+  display: flex; gap: 50px;
+  animation: marquee 18s linear infinite; width: max-content;
+}
+.marquee-track span {
+  font-family: var(--serif); font-size: clamp(32px, 5vw, 64px);
+  font-weight: 700; white-space: nowrap; color: var(--paper);
+}
+.marquee-track span.outline { -webkit-text-stroke: 1px var(--paper); color: transparent; }
+.marquee-track .dot { color: var(--accent); }
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* ===== FOOTER ===== */
+.footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 40px; background: var(--ink); color: #666;
+  font-size: 12px; border-top: 1px solid #333;
+}
+.footer a { color: #888; text-decoration: none; transition: color 0.3s; }
+.footer a:hover { color: var(--paper); }
+.footer-links { display: flex; gap: 20px; }
+
+/* ===== MAGNETIC BUTTON ===== */
+.magnetic { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* ===== DASHED ===== */
+.dashed-divider { border: none; border-top: 2px dashed var(--ink); margin: 0 40px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .topbar { padding: 12px 20px; }
+  .hero { padding: 100px 20px 0; }
+  .hero-subtitle-row { grid-template-columns: 1fr; gap: 16px; }
+  .hero-subtitle-right { text-align: left; }
+  .hero-phone-float { display: none; }
+  .features-grid { grid-template-columns: 1fr; }
+  .showcase-pin { height: auto; }
+  .showcase-sticky { position: relative; height: auto; padding: 60px 20px; flex-direction: column; gap: 30px; }
+  .showcase-phone { width: 220px; }
+  .showcase-caption { position: relative; left: auto; right: auto; top: auto; transform: none; opacity: 1; width: 100%; text-align: center; }
+  .cap-left.active, .cap-right.active { transform: none; }
+  .showcase-progress { display: none; }
+  .showcase-bg-text { display: none; }
+  .stats-section { grid-template-columns: repeat(2, 1fr); }
+  .stat-item:nth-child(2) { border-right: none; }
+  .how-steps { grid-template-columns: 1fr; }
+  .dark-section, .showcase, .how-section, .cta-section, .tagline-section { padding: 60px 20px; }
+  .footer { flex-direction: column; gap: 12px; padding: 16px 20px; }
+  .dashed-divider { margin: 0 20px; }
+  .cursor-glow { display: none; }
+}
+</style>
+</head>
+<body>
+
+<svg style="position:absolute;width:0;height:0">
+  <defs>
+    <filter id="torn-filter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-text"><span style="animation-delay:0.2s">T</span><span style="animation-delay:0.25s">A</span><span style="animation-delay:0.3s">P</span><span style="animation-delay:0.35s">X</span><span style="animation-delay:0.4s">P</span><span style="animation-delay:0.45s">E</span><span style="animation-delay:0.5s">N</span><span style="animation-delay:0.55s">S</span><span style="animation-delay:0.6s">E</span></div>
+  <div class="loader-bar"><div class="loader-bar-inner"></div></div>
+</div>
+
+<!-- CURSOR GLOW -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <div class="topbar-logo">TapXpense</div>
+  <div style="font-family: var(--serif-display); font-style: italic; font-size: 13px; letter-spacing: 0.04em;">The Expense Tracker</div>
+  <div class="topbar-right">
+    <a href="#features" class="magnetic">Features</a>
+    <a href="#how" class="magnetic">How It Works</a>
+    <a href="#download" class="magnetic">Download</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-date-row">
+    <span>Est. 2026</span>
+    <span>iOS App</span>
+    <span>Sydney, AU</span>
+  </div>
+  <h1 class="hero-masthead" id="masthead">
+    TAP<span class="line-through">XPENSE</span>
+  </h1>
+  <div class="hero-subtitle-row">
+    <div class="hero-subtitle-left">
+      <div class="word"><span style="animation-delay:2.8s">Track</span></div>
+      <div class="word"><span style="animation-delay:2.9s">Every</span></div><br>
+      <div class="word"><span style="animation-delay:3.0s">Penny,</span></div><br>
+      <div class="word"><span style="animation-delay:3.1s">Effortlessly.</span></div>
+    </div>
+    <div class="hero-subtitle-center">
+      A simple, beautiful expense tracker built for people who want clarity — not complexity. Log spending in seconds with iOS Shortcuts.
+    </div>
+    <div class="hero-subtitle-right">
+      Daily Dashboard<br>iOS Shortcut Logging<br>Category Breakdown<br>Weekly &amp; Monthly Reports
+    </div>
+  </div>
+</section>
+
+<!-- TORN EDGE -->
+<div class="torn-edge"></div>
+
+<!-- DARK FEATURES -->
+<section class="dark-section" id="features">
+  <div class="features-header">
+    <h2 data-scroll="up">YOUR<br>EXPENSES</h2>
+    <p data-scroll="up" data-delay="100">Everything you need, nothing you don't.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card" data-scroll="flip" data-delay="0" data-tilt>
+      <div class="feature-num">Feature 01</div>
+      <div class="feature-title">iOS Shortcut<br>Logging <span class="feature-tag">New</span></div>
+      <div class="feature-desc">Type "10 for coffee" and you're done. Log expenses from your home screen, lock screen, or Siri — no app launch needed.</div>
+    </div>
+    <div class="feature-card" data-scroll="flip-left" data-delay="100" data-tilt>
+      <div class="feature-num">Feature 02</div>
+      <div class="feature-title">Daily<br>Dashboard</div>
+      <div class="feature-desc">See your week at a glance. A clean, minimal dashboard with spending charts and recent transactions.</div>
+    </div>
+    <div class="feature-card" data-scroll="flip" data-delay="200" data-tilt>
+      <div class="feature-num">Feature 03</div>
+      <div class="feature-title">Category<br>Breakdown</div>
+      <div class="feature-desc">Food, coffee, transport — see where your money really goes. Smart categorization for better spending habits.</div>
+    </div>
+    <div class="feature-card" data-scroll="flip-left" data-delay="300" data-tilt>
+      <div class="feature-num">Feature 04</div>
+      <div class="feature-title">Weekly &amp; Monthly<br>Reports</div>
+      <div class="feature-desc">Clear summaries with breakdowns that help you stay on budget and save more.</div>
+    </div>
+  </div>
+</section>
+
+<div class="torn-edge-top"></div>
+
+<!-- SCROLL-DRIVEN 3D PHONE SHOWCASE -->
+<section class="showcase-pin" id="showcase">
+  <div class="showcase-sticky">
+    <div class="showcase-bg-text" id="showcaseBgText">EXPENSES</div>
+    <div class="showcase-intro-label">SCROLL TO EXPLORE</div>
+    <div class="showcase-progress" id="showcaseProgress">
+      <div class="showcase-dot active" data-step="0"></div>
+      <div class="showcase-dot" data-step="1"></div>
+      <div class="showcase-dot" data-step="2"></div>
+      <div class="showcase-dot" data-step="3"></div>
+    </div>
+
+    <!-- Captions -->
+    <div class="showcase-captions">
+      <div class="showcase-caption cap-left active" data-cap="0">
+        <div class="cap-num">01 — The Home Dashboard</div>
+        <h3>Your week at<br>a glance.</h3>
+        <p>A$324.24 this week, charted by day with your latest expenses below. Clean, minimal, and instantly readable.</p>
+      </div>
+      <div class="showcase-caption cap-right" data-cap="1">
+        <div class="cap-num">02 — Home-Screen Widget</div>
+        <h3>Add an expense<br>in one tap.</h3>
+        <p>See this month's spending right on your home screen — and log a new expense without ever opening the app.</p>
+      </div>
+      <div class="showcase-caption cap-left" data-cap="2">
+        <div class="cap-num">03 — Smart Insights</div>
+        <h3>It does the<br>thinking for you.</h3>
+        <p>Spend forecasts, your biggest expense, subscription totals — plus a private, on-device AI you can ask about your money.</p>
+      </div>
+      <div class="showcase-caption cap-right" data-cap="3">
+        <div class="cap-num">04 — Reports</div>
+        <h3>Week, month<br>&amp; year.</h3>
+        <p>A$324 this week, A$727 this month, A$1,011 this year. Clear totals and AI-written summaries that make sense of it all.</p>
+      </div>
+    </div>
+
+    <div class="showcase-stage">
+      <div class="showcase-phone" id="showcasePhone">
+        <div class="showcase-phone-frame">
+          <div class="showcase-phone-screens">
+            <div class="showcase-phone-notch"></div>
+            <img src="assets/home.png" alt="Home dashboard" class="active" data-screen="0">
+            <img src="assets/widget.png" alt="Home-screen widget" data-screen="1">
+            <img src="assets/insights.png" alt="Smart insights" data-screen="2">
+            <img src="assets/reports-totals.png" alt="Reports totals" data-screen="3">
+            <div class="showcase-phone-glare"></div>
+          </div>
+        </div>
+        <div class="showcase-phone-shadow" id="showcaseShadow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="dashed-divider">
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="stat-item" data-scroll="up" data-delay="0">
+    <div class="stat-label">Seconds to Log</div>
+    <div class="stat-value"><span class="count-up" data-target="3">0</span></div>
+    <div class="stat-unit">with iOS Shortcut</div>
+  </div>
+  <div class="stat-item" data-scroll="up" data-delay="100">
+    <div class="stat-label">Categories</div>
+    <div class="stat-value">∞</div>
+    <div class="stat-unit">custom tags</div>
+  </div>
+  <div class="stat-item" data-scroll="up" data-delay="200">
+    <div class="stat-label">Report Types</div>
+    <div class="stat-value"><span class="count-up" data-target="3">0</span></div>
+    <div class="stat-unit">week / month / year</div>
+  </div>
+  <div class="stat-item" data-scroll="up" data-delay="300">
+    <div class="stat-label">App Size</div>
+    <div class="stat-value">&lt;<span class="count-up" data-target="5">0</span></div>
+    <div class="stat-unit">megabytes</div>
+  </div>
+</div>
+
+<!-- BIG TAGLINE -->
+<section class="tagline-section">
+  <div class="tagline-bg-text">TAPXPENSE</div>
+  <h2 data-scroll="scale">THE<br><span class="tagline-word-accent">EFFORTLESS</span><br>EXPENSE<br>TRACKER</h2>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="how-header">
+    <h2 data-scroll="left">How It<br>Works</h2>
+    <p data-scroll="right">Three simple steps to financial clarity. No sign-up walls, no complexity.</p>
+  </div>
+  <div class="how-steps">
+    <div class="how-step" data-scroll="up" data-delay="0">
+      <div class="how-step-num">01</div>
+      <h3>Tap the Shortcut</h3>
+      <p>Add the TapXpense shortcut to your home screen. One tap opens a quick input.</p>
+      <div class="how-step-phone"><img src="assets/widget.png" alt="Widget"></div>
+    </div>
+    <div class="how-step" data-scroll="up" data-delay="150">
+      <div class="how-step-num">02</div>
+      <h3>Watch It Organize</h3>
+      <p>Expenses are sorted by date and category. Your dashboard updates in real-time.</p>
+      <div class="how-step-phone"><img src="assets/home.png" alt="Dashboard"></div>
+    </div>
+    <div class="how-step" data-scroll="up" data-delay="300">
+      <div class="how-step-num">03</div>
+      <h3>Review Reports</h3>
+      <p>Check weekly, monthly, or yearly summaries. Understand spending patterns.</p>
+      <div class="how-step-phone"><img src="assets/reports-totals.png" alt="Reports"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="torn-edge"></div>
+<section class="cta-section" id="download">
+  <div class="cta-logo" data-scroll="scale">
+    <img src="assets/logo.jpeg" alt="TapXpense Logo">
+  </div>
+  <h2 data-scroll="up" data-delay="100">Start<br>Tracking<br>Today</h2>
+  <p data-scroll="up" data-delay="200">Join users who've simplified their expense tracking. Available now on the App Store.</p>
+  <a href="#" class="cta-btn magnetic" data-scroll="up" data-delay="300">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+    Download on App Store
+  </a>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>Track Every Penny</span><span class="dot">•</span>
+    <span class="outline">TapXpense</span><span class="dot">•</span>
+    <span>Effortless Logging</span><span class="dot">•</span>
+    <span class="outline">iOS Shortcuts</span><span class="dot">•</span>
+    <span>Track Every Penny</span><span class="dot">•</span>
+    <span class="outline">TapXpense</span><span class="dot">•</span>
+    <span>Effortless Logging</span><span class="dot">•</span>
+    <span class="outline">iOS Shortcuts</span><span class="dot">•</span>
+  </div>
+</div>
+
+<footer class="footer">
+  <div>TapXpense © 2026</div>
+  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Support</a></div>
+</footer>
+
+<script>
+// === LOADER ===
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('loader').classList.add('hidden'), 1800);
+});
+
+// === CURSOR GLOW ===
+const glow = document.getElementById('cursorGlow');
+document.addEventListener('mousemove', e => {
+  glow.style.left = e.clientX + 'px';
+  glow.style.top = e.clientY + 'px';
+});
+
+// === HERO MASTHEAD CHAR SPLIT ===
+const masthead = document.getElementById('masthead');
+const html = masthead.innerHTML;
+const lineThrough = masthead.querySelector('.line-through');
+const lineThroughText = lineThrough.textContent;
+// Split TAP into chars
+const tapText = 'TAP';
+let charIndex = 0;
+let newHTML = '';
+for (let i = 0; i < tapText.length; i++) {
+  newHTML += `<span class="char" style="animation-delay:${1.9 + charIndex * 0.06}s">${tapText[i]}</span>`;
+  charIndex++;
+}
+newHTML += '<span class="line-through">';
+for (let i = 0; i < lineThroughText.length; i++) {
+  newHTML += `<span class="char" style="animation-delay:${1.9 + charIndex * 0.06}s">${lineThroughText[i]}</span>`;
+  charIndex++;
+}
+newHTML += '</span>';
+masthead.innerHTML = newHTML;
+
+// === SCROLL REVEAL ===
+const scrollEls = document.querySelectorAll('[data-scroll]');
+const scrollObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const delay = parseInt(entry.target.dataset.delay || 0);
+      setTimeout(() => entry.target.classList.add('in-view'), delay);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+scrollEls.forEach(el => scrollObs.observe(el));
+
+// === 3D TILT ON FEATURE CARDS ===
+document.querySelectorAll('[data-tilt]').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    const rotateX = (y - 0.5) * -12;
+    const rotateY = (x - 0.5) * 12;
+    card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+    card.style.setProperty('--mx', (x * 100) + '%');
+    card.style.setProperty('--my', (y * 100) + '%');
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+// === 3D TILT ON PHONES ===
+document.querySelectorAll('[data-tilt-phone]').forEach(wrap => {
+  wrap.addEventListener('mousemove', e => {
+    const rect = wrap.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    wrap.style.transform = `perspective(800px) rotateY(${x * 20}deg) rotateX(${-y * 15}deg)`;
+  });
+  wrap.addEventListener('mouseleave', () => {
+    wrap.style.transform = '';
+  });
+});
+
+// === MAGNETIC BUTTONS ===
+document.querySelectorAll('.magnetic').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = '';
+  });
+});
+
+// === COUNT UP ===
+const countObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      let current = 0;
+      const step = () => {
+        current++;
+        el.textContent = current;
+        if (current < target) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+      countObs.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.count-up').forEach(el => countObs.observe(el));
+
+// === SMOOTH NAV ===
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// === PARALLAX on tagline bg text ===
+const taglineBg = document.querySelector('.tagline-bg-text');
+if (taglineBg) {
+  window.addEventListener('scroll', () => {
+    const rect = taglineBg.parentElement.getBoundingClientRect();
+    const progress = -rect.top / window.innerHeight;
+    taglineBg.style.transform = `translate(-50%, -50%) translateX(${progress * 80}px) scale(${1 + progress * 0.05})`;
+  }, { passive: true });
+}
+
+// === SCROLL-DRIVEN 3D PHONE SHOWCASE ===
+(function() {
+  const pin = document.getElementById('showcase');
+  const phone = document.getElementById('showcasePhone');
+  const shadow = document.getElementById('showcaseShadow');
+  const bgText = document.getElementById('showcaseBgText');
+  const screens = document.querySelectorAll('.showcase-phone-screens img');
+  const captions = document.querySelectorAll('.showcase-caption');
+  const dots = document.querySelectorAll('.showcase-dot');
+  if (!pin || !phone) return;
+
+  const numSteps = 4;
+  const bgWords = ['HOME', 'WIDGET', 'INSIGHTS', 'REPORTS'];
+
+  // Easing
+  const easeInOut = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  let currentStep = -1;
+  let raf = null;
+
+  function update() {
+    const rect = pin.getBoundingClientRect();
+    const winH = window.innerHeight;
+    const total = pin.offsetHeight - winH;
+    // 0 → 1 across the entire pinned scroll
+    const progress = Math.max(0, Math.min(1, -rect.top / total));
+
+    // Determine current narrative step (0..3)
+    const stepFloat = progress * (numSteps - 1);
+    const step = Math.round(stepFloat);
+    const localT = stepFloat - Math.floor(stepFloat);
+    const localEased = easeInOut(localT);
+
+    // === 3D phone transforms — interpolate per beat ===
+    // Define keyframes for each step: rotateY, rotateX, rotateZ, translateZ, translateY, translateX, scale
+    const keys = [
+      { ry: -18, rx: 6,  rz: -2, tz: 0,    ty: 0,   tx: -60, s: 1.0 },  // intro: tilted left
+      { ry: 18,  rx: -4, rz: 3,  tz: 80,   ty: -20, tx: 60,  s: 1.05 }, // shortcut: tilted right, popped forward
+      { ry: -10, rx: 8,  rz: -4, tz: -40,  ty: 0,   tx: -40, s: 0.95 }, // reports: tilted back-left
+      { ry: 0,   rx: 0,  rz: 0,  tz: 60,   ty: 0,   tx: 0,   s: 1.1 }   // hero pose: front and large
+    ];
+
+    const i0 = Math.min(Math.floor(stepFloat), numSteps - 2);
+    const i1 = i0 + 1;
+    const t = stepFloat - i0;
+    const e = easeInOut(Math.max(0, Math.min(1, t)));
+
+    const k0 = keys[i0];
+    const k1 = keys[i1];
+    const ry = lerp(k0.ry, k1.ry, e);
+    const rx = lerp(k0.rx, k1.rx, e);
+    const rz = lerp(k0.rz, k1.rz, e);
+    const tz = lerp(k0.tz, k1.tz, e);
+    const ty = lerp(k0.ty, k1.ty, e);
+    const tx = lerp(k0.tx, k1.tx, e);
+    const s  = lerp(k0.s,  k1.s,  e);
+
+    phone.style.transform =
+      `translate3d(${tx}px, ${ty}px, 0) ` +
+      `scale(${s}) ` +
+      `rotateY(${ry}deg) rotateX(${rx}deg) rotateZ(${rz}deg) ` +
+      `translateZ(${tz}px)`;
+
+    // Shadow follows but flatter
+    shadow.style.transform = `scaleX(${1 - Math.abs(ry) * 0.01}) scaleY(${1 - Math.abs(tz) * 0.002}) translateY(${tz * 0.1}px)`;
+    shadow.style.opacity = 0.3 + Math.abs(tz) * 0.002;
+
+    // Background text parallax — drifts horizontally with scroll
+    bgText.style.transform = `translate(${-50 - progress * 30}%, -50%) scale(${1 + progress * 0.1})`;
+
+    // Discrete step changes
+    if (step !== currentStep) {
+      currentStep = step;
+      const safeStep = Math.max(0, Math.min(numSteps - 1, step));
+
+      screens.forEach((img, i) => {
+        img.classList.toggle('active', i === safeStep);
+      });
+      captions.forEach((cap, i) => {
+        cap.classList.toggle('active', i === safeStep);
+      });
+      dots.forEach((d, i) => {
+        d.classList.toggle('active', i === safeStep);
+      });
+      if (bgWords[safeStep]) bgText.textContent = bgWords[safeStep];
+    }
+  }
+
+  function onScroll() {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = null;
+      update();
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  update();
+})();
+</script>
+</body>
+</html>
